@@ -1,0 +1,17 @@
+server:
+  port: 8081
+
+spring:
+  application:
+    name: MSVC-STUDENT
+  config:
+    import: optional:configserver:http://config:8888
+  datasource:
+    url: jdbc:mysql://mysql_student:3306/studentdb
+    username: root
+    password: MySQL2024!
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka

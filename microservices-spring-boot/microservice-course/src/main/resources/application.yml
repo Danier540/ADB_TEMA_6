@@ -1,0 +1,17 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: MSVC-COURSE
+  config:
+    import: optional:configserver:http://config:8888
+  datasource:
+    url: jdbc:postgresql://postgres_course:5432/coursesDb
+    username: postgres
+    password: 150919
+
+eureka:
+  client:
+    service-url:
+      defaultZone: http://eureka:8761/eureka

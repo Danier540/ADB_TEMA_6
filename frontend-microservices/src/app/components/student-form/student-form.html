@@ -1,0 +1,39 @@
+<h2>Registrar Estudiante</h2>
+<form (ngSubmit)="createStudent()" #studentForm="ngForm">
+  <input type="text" name="name" [(ngModel)]="student.name" placeholder="Nombre" required>
+  <input type="text" name="lastName" [(ngModel)]="student.lastName" placeholder="Apellido" required>
+  <input type="email" name="email" [(ngModel)]="student.email" placeholder="Correo" required>
+  <input type="number" name="courseId" [(ngModel)]="student.courseId" placeholder="ID del curso" required>
+  <button type="submit">Guardar Estudiante</button>
+</form>
+
+<hr>
+
+<div>
+  <label for="courseIdSearch">Buscar por ID de curso:</label>
+  <input type="number" id="courseIdSearch" [(ngModel)]="searchCourseId" name="searchCourseId">
+  <button (click)="loadStudents(searchCourseId)">Cargar Estudiantes</button>
+</div>
+
+<table border="1" style="width:100%; text-align:left; margin-top:10px;" *ngIf="students.length > 0">
+  <thead>
+    <tr>
+      <th>ID</th>
+      <th>Nombre</th>
+      <th>Apellido</th>
+      <th>Email</th>
+      <th>Curso</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let s of students">
+      <td>{{ s.id }}</td>
+      <td>{{ s.name }}</td>
+      <td>{{ s.lastName }}</td>
+      <td>{{ s.email }}</td>
+      <td>{{ s.courseId }}</td>
+    </tr>
+  </tbody>
+</table>
+
+<p *ngIf="notFound">No se encontraron estudiantes para ese curso.</p>

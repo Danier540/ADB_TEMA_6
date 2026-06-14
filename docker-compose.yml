@@ -1,0 +1,95 @@
+version: "3.9"
+
+services:
+  mysql_student:
+    image: mysql:8
+    container_name: mysql_student
+    environment:
+      MYSQL_ROOT_PASSWORD: MySQL2024!
+      MYSQL_DATABASE: studentdb
+    ports:
+      - "3306:3306"
+
+  postgres_course:
+    image: postgres:15
+    container_name: postgres_course
+    environment:
+      POSTGRES_PASSWORD: 150919
+      POSTGRES_DB: coursesDb
+    ports:
+      - "5433:5432"
+
+  config:
+    build:
+      context: ./microservices-spring-boot/microservice-config
+      dockerfile: Dockerfile
+    container_name: config_service
+    ports:
+      - "8888:8888"
+
+  eureka:
+    build:
+      context: ./microservices-spring-boot/microservice-eureka
+      dockerfile: Dockerfile
+    container_name: eureka_service
+    ports:
+      - "8761:8761"
+    depends_on:
+      - config
+
+  gateway:
+    build:
+      context: ./microservices-spring-boot/microservice-gateway
+      dockerfile: Dockerfile
+    container_name: gateway_service
+    ports:
+      - "8080:8080"
+    depends_on:
+      - eureka
+      - config
+
+  student:
+    build:
+      context: ./microservices-spring-boot/microservice-student
+      dockerfile: Dockerfile
+    container_name: student_service
+    depends_on:
+      - mysql_student
+      - eureka
+      - config
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://mysql_student:3306/studentdb
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: MySQL2024!
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config:8888
+    ports:
+      - "8081:8081"
+
+  course:
+    build:
+      context: ./microservices-spring-boot/microservice-course
+      dockerfile: Dockerfile
+    container_name: course_service
+    depends_on:
+      - postgres_course
+      - eureka
+      - config
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://postgres_course:5432/coursesDb
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: 150919
+      EUREKA_CLIENT_SERVICEURL_DEFAULTZONE: http://eureka:8761/eureka
+      SPRING_CONFIG_IMPORT: optional:configserver:http://config:8888
+    ports:
+      - "8082:8082"
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx_proxy
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - gateway

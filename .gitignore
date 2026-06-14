@@ -1,0 +1,36 @@
+# =========================
+# Backend - Spring Boot
+# =========================
+**/target/
+**/build/
+**/*.iml
+**/.idea/
+**/out/
+**/logs/
+*.log
+.mvn/wrapper/maven-wrapper.jar
+
+# =========================
+# Frontend - Angular
+# =========================
+/dist
+/tmp
+/out-tsc
+/bazel-out
+/node_modules
+npm-debug.log
+yarn-error.log
+/.angular/cache
+.sass-cache/
+/coverage
+/.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# =========================
+# Archivos de sistema
+# =========================
+.DS_Store
+Thumbs.db
